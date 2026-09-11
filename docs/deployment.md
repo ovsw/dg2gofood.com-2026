@@ -22,6 +22,12 @@ Add the values from `studio/.env.local.example`, then deploy manually from the r
 pnpm --dir studio deploy
 ```
 
+The hosted Studio must point Presentation at the live Website, not at localhost. Deploy it with the preview origin overridden:
+
+```bash
+SANITY_STUDIO_PREVIEW_URL=https://dg2gofoodcom-2026.vercel.app pnpm --dir studio deploy
+```
+
 The Studio deploy must run with your personal Sanity login, not the editor token in `studio/.env.local`. That token has no `deployStudio` grant. If the deploy reports a missing grant, run `SANITY_AUTH_TOKEN=<your CLI login token> pnpm --dir studio deploy`.
 
 The hosted Studio is `dg2gofoodcom-2026`, at <https://dg2gofoodcom-2026.sanity.studio>. Do not add Studio deployment CI.
