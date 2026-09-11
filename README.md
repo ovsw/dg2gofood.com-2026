@@ -1,0 +1,148 @@
+# DelGrosso's DG2Go
+
+The production website and Sanity Studio for DelGrosso's DG2Go (dg2gofood.com), the online store for DelGrosso Foods Inc.
+
+## Local setup
+
+Requirements:
+
+- Node.js 24.19.0
+- pnpm 11.10.0
+- The DG2Go Sanity project ID: `egfhtk7k`
+- A Sanity API read token
+- A Sanity auth token
+- The Studio hostname: `dg2gofoodcom-2026`
+
+Install dependencies and run the guided setup:
+
+```bash
+pnpm install
+pnpm run setup
+```
+
+Setup asks for the site name, public URL, Sanity project ID, dataset, Sanity API read token, Sanity auth token, and Studio hostname. Use `egfhtk7k` as the project ID, `production` as the dataset, and `dg2gofoodcom-2026` as the Studio hostname. Setup writes ignored `frontend/.env.local` and `studio/.env.local` files. It does not create or change Sanity projects, datasets, CORS origins, tokens, Vercel projects, GitHub repositories, or other hosted resources.
+
+If local env files already exist, setup stops instead of replacing them. Use `pnpm run setup --force` only when you intend to replace both files.
+
+The read token powers Sanity Presentation draft previews. The auth token powers Studio-side CLI jobs and repository-scoped Sanity MCP access in Codex. Add optional integration credentials to the local env files only when the matching feature needs them. The committed `.env.local.example` files list the supported names.
+
+Start both apps:
+
+```bash
+pnpm dev
+```
+
+- Website: `http://localhost:3000`
+- Studio: `http://localhost:3333`
+- Hosted Studio: <https://dg2gofoodcom-2026.sanity.studio>
+
+Before using Presentation, add the Website and Studio origins to the Sanity project's CORS settings.
+
+### Parallel worktrees
+
+In a new Git worktree, copy configuration from an explicitly selected worktree
+of this same repository, then start an isolated server pair:
+
+```bash
+pnpm setup:worktree --source /absolute/path/to/configured-checkout
+pnpm dev:worktree
+```
+
+Setup keeps existing environment files. It copies only the Website and Studio
+`.env.local` files and installs locked dependencies. If no worktree has those
+files, run `pnpm setup` first.
+
+The launcher reserves paired ports in `3000–3009` and `3333–3342`, prints both
+URLs, and sets matching Website and Presentation origins. A saved assignment
+is reused; a busy saved port stops the launch. To select a pair explicitly:
+
+```bash
+pnpm dev:worktree --frontend-port 3001 --studio-port 3334
+```
+
+Run `pnpm setup:sanity-cors` to print the allowed local origins. Add them with
+credentials enabled in the Sanity project's CORS settings. This command does
+not change hosted settings.
+
+On Linux, `pnpm dev:stop` lists this repository's development servers. Use
+`pnpm dev:stop --here` to stop the current worktree's servers, `--port 3001`
+to select a server, or `--all` to stop servers across this repository's
+registered worktrees. The shutdown tool requires Linux `/proc`.
+
+## Optional sample content
+
+After setup, you can seed a new empty dataset with neutral example content:
+
+```bash
+pnpm seed
+```
+
+The seed is manual. It never runs during install, setup, development, build, or deploy. It refuses to write unless the target dataset is empty.
+
+Seeding needs a Sanity write token in `SANITY_AUTH_TOKEN`, either in the shell or in `studio/.env.local`.
+
+The sample content creates global settings, navigation, footer, the homepage, a normal `/about/` page, Blog settings, authors, categories, a Blog Post, FAQ, Team Member, Testimonial, relevant SEO values, and every retained Page Builder section. Use it to confirm Website rendering and Studio editing, then remove it before adding real project content:
+
+```bash
+pnpm unseed
+```
+
+Unseed removes only marked Starter sample documents and the bundled Starter sample assets. Replacement images uploaded by editors are preserved. It refuses partial or unmarked targets instead of emptying a dataset generally.
+
+The section library includes testimonials, stacked feature rows with optional
+links, and a timeline. These sections use existing shared content types and
+neutral styles. Add a section with `pnpm page-builder:new <name>`; see
+`docs/agents/page-builder.md` for generation, previews, and registration.
+
+Pages accept nested slugs such as `about/our-team`. Blog routes stay reserved.
+SEO sharing uses an editor-selected image when present, then a generated card.
+
+## Workspace commands
+
+```bash
+pnpm dev
+pnpm dev:frontend
+pnpm dev:studio
+pnpm dev:stop
+pnpm seed
+pnpm unseed
+pnpm verify
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm typegen
+```
+
+Run `pnpm verify` before opening a pull request. It checks generated Sanity types, TypeScript, lint, focused tests, both production builds, and the browser acceptance journey.
+
+Use plain pnpm commands from the repository root. Add workspace dependencies with `pnpm --dir frontend add <package>` or `pnpm --dir studio add <package>`.
+
+The workspace patches `sanity-plugin-media@5.0.11` to restore its wide-screen
+tags panel and tag icon. When upgrading that plugin, check both fixes before
+removing or replacing the patch.
+
+## Deployment
+
+The Website and Studio deploy separately.
+
+The Vercel project is `dg2gofoodcom-2026`, under the DelGrossos team. Its root directory is `frontend`, and it serves <https://dg2gofoodcom-2026.vercel.app>. Keep its environment values in sync with `frontend/.env.local.example`.
+
+Deploy the Studio manually after configuring its hosted environment values:
+
+```bash
+pnpm --dir studio deploy
+```
+
+The hosted Studio is <https://dg2gofoodcom-2026.sanity.studio>.
+
+See `docs/deployment.md` for the production gate and complete deployment checklist.
+
+## Repository layout
+
+- `frontend/`: Next.js Website
+- `studio/`: Sanity Studio, schemas, and functions
+- `shared/`: code shared by both workspaces
+- `docs/agents/`: repository workflow guidance
+
+Read `docs/content-model.md` for the model map and `docs/agents/page-builder.md` before changing Page Builder sections.
