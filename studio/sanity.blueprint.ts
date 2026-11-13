@@ -1,7 +1,18 @@
 import {
   defineBlueprint,
   defineDocumentFunction,
+  defineSyncTagInvalidateFunction,
 } from "@sanity/blueprints";
+import { requireStudioEnvironmentValue } from "./environment";
+
+const projectId = requireStudioEnvironmentValue(
+  "SANITY_STUDIO_PROJECT_ID",
+  process.env.SANITY_STUDIO_PROJECT_ID,
+);
+const dataset = requireStudioEnvironmentValue(
+  "SANITY_STUDIO_DATASET",
+  process.env.SANITY_STUDIO_DATASET,
+);
 
 export default defineBlueprint({
   resources: [
@@ -11,7 +22,9 @@ export default defineBlueprint({
       memory: 2,
       timeout: 30,
       event: {
-        on: ["publish"],
+        on: ["create", "update"],
+        includeDrafts: false,
+        includeAllVersions: false,
         filter:
           '_type in ["page", "post", "category"] && delta::changedAny(slug.current)',
         projection: `{
@@ -20,6 +33,16 @@ export default defineBlueprint({
           "beforeSlug": before().slug.current,
           "slug": after().slug.current
         }`,
+      },
+    }),
+    // On every publish, tells the Website which cached content changed. See
+    // "Content goes live on publish" in docs/deployment.md.
+    defineSyncTagInvalidateFunction({
+      name: "invalidate-tags",
+      src: "./functions/invalidate-tags",
+      timeout: 20,
+      event: {
+        resource: { type: "dataset", id: `${projectId}.${dataset}` },
       },
     }),
   ],

@@ -156,7 +156,7 @@ async function stateIsAvailable(state, probe) {
   return frontendAvailable && studioAvailable;
 }
 
-async function defaultReservationRoot(worktreeRoot) {
+export async function defaultReservationRoot(worktreeRoot) {
   const { stdout } = await execFileAsync("git", [
     "-C",
     worktreeRoot,
@@ -359,11 +359,22 @@ export async function allocatePorts({
   throw new Error(`All ${SLOT_COUNT} worktree port slots are busy.`);
 }
 
-export function desiredSanityOrigins() {
-  return Array.from({ length: SLOT_COUNT }, (_, slot) => portsForSlot(slot)).flatMap(
+export function desiredSanityOrigins({ productionOrigin } = {}) {
+  const localOrigins = Array.from(
+    { length: SLOT_COUNT },
+    (_, slot) => portsForSlot(slot),
+  ).flatMap(
     ({ frontendPort, studioPort }) => [
       { origin: `http://localhost:${frontendPort}`, credentials: true },
       { origin: `http://localhost:${studioPort}`, credentials: true },
     ],
   );
+
+  if (
+    !productionOrigin ||
+    localOrigins.some(({ origin }) => origin === productionOrigin)
+  ) {
+    return localOrigins;
+  }
+  return [...localOrigins, { origin: productionOrigin, credentials: true }];
 }

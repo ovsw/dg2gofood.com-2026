@@ -20,7 +20,6 @@ import redirect from "./schemas/documents/redirect";
 import blockContent from "./schemas/blocks/shared/block-content";
 import link from "./schemas/blocks/shared/link";
 import { colorVariant } from "./schemas/blocks/shared/color-variant";
-import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
 import customUrl from "./schemas/blocks/shared/custom-url";
 import customLink from "./schemas/blocks/shared/custom-link";
@@ -33,17 +32,8 @@ import {
   blogPostSidebarAction,
 } from "./schemas/blocks/shared/blog-post-sidebar";
 // Schema UI objects
-import hero from "./schemas/blocks/hero";
-import latestArticles from "./schemas/blocks/latest-articles";
-import faqAccordion from "./schemas/blocks/faq-accordion";
-import storyFeature from "./schemas/blocks/story-feature";
-import teamMembers from "./schemas/blocks/team-members";
 import richTextBlock from "./schemas/blocks/rich-text-block";
-import ctaBanner from "./schemas/blocks/cta-banner";
-import benefitCards from "./schemas/blocks/benefit-cards";
-import testimonials from "./schemas/blocks/testimonials";
-import stackedFeatureRows from "./schemas/blocks/stacked-feature-rows";
-import stackedTimeline from "./schemas/blocks/stacked-timeline";
+import scaffold from "./schemas/blocks/scaffold";
 // page-builder-generator:block-imports
 
 export const schemaTypes = [
@@ -69,7 +59,6 @@ export const schemaTypes = [
   blockContent,
   link,
   colorVariant,
-  buttonVariant,
   sectionPadding,
   customUrl,
   customLink,
@@ -80,16 +69,7 @@ export const schemaTypes = [
   blogPostSidebarAction,
   blogPostSidebar,
   // blocks
-  hero,
-  latestArticles,
-  faqAccordion,
-  storyFeature,
-  teamMembers,
   richTextBlock,
-  ctaBanner,
-  benefitCards,
-  testimonials,
-  stackedFeatureRows,
-  stackedTimeline,
+  scaffold,
   // page-builder-generator:block-types
 ];
