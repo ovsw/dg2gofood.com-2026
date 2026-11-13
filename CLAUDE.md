@@ -47,6 +47,8 @@ Use [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): 
 - Keep explaining *why* in the body. The prefix classifies the change; it does not replace the reasoning.
 - Note that commits predating this rule use plain imperative subjects with no prefix. Follow the convention above, not the older style.
 
+## Agent skills
+
 ### Issue tracker
 
 Issues and PRDs are tracked in this repository's GitHub Issues. See `docs/agents/issue-tracker.md`.
@@ -66,3 +68,17 @@ Before adding or changing a Page Builder section, read `docs/agents/page-builder
 ### Development workflow
 
 Before changing workspace dependencies, Sanity schemas, GROQ queries, or development scripts, consult the relevant section of `README.md`.
+
+### Raster image descriptions
+
+Before syncing Raster descriptions or configuring Raster credentials, read
+`docs/agents/raster-descriptions.md`.
+
+### Clark editing guide
+
+Clark, the Telegram editing bot (`ovsw/client-editing-portal`), edits this
+site's content. It reads `docs/agents/editing.md` and the deployed schema with
+every request. When a change alters a content type, a section, or what an
+editor may do, update that guide in the same pull request, then reload it into
+Clark's registry as its first section says. After a merged schema change, run
+`pnpm deploy:studio`: it also deploys the schema that Clark reads.
